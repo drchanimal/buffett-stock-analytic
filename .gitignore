@@ -1,0 +1,17 @@
+# Environments
+venv/
+env/
+.env
+
+# Python caching
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE and OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Streamlit specific (if any)
+.streamlit/credentials.toml
