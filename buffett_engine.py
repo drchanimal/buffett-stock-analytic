@@ -1,8 +1,5 @@
 import yfinance as yf
 import pandas as pd
-import numpy as np
-import edgar
-from edgar import Company
 import requests
 
 def resolve_ticker(query: str) -> str:
@@ -31,19 +28,7 @@ def resolve_ticker(query: str) -> str:
     # Fallback to the original search string if it fails
     return query
 
-
-def set_sec_identity(email: str):
-    """Set the SEC EDGAR user agent identity string required by the API."""
-    try:
-        # SEC requires format: Sample Company Name user@domain.com
-        if "@" in email and " " not in email:
-            email = f"ValueApp {email}"
-        edgar.set_identity(email)
-        return True
-    except Exception as e:
-        print(f"Error setting SEC identity: {e}")
-        return False
-
+ 
 def pull_yfinance_data(ticker_symbol: str):
     """Pull financial data from yfinance."""
     ticker = yf.Ticker(ticker_symbol)
@@ -183,10 +168,9 @@ def calculate_intrinsic_value(fcf, growth_rate, discount_rate, terminal_rate, sh
     
     return total_enterprise_value / shares_out
 
-def perform_fundamental_analysis(ticker_symbol: str, user_identity: str = "") -> dict:
+def perform_fundamental_analysis(ticker_symbol: str) -> dict:
     """Wrapper function to perform full fundamental analysis on a ticker."""
-    if user_identity:
-        set_sec_identity(user_identity)
+        
         
     data = pull_yfinance_data(ticker_symbol)
     inc = data["income_statement"]
@@ -207,17 +191,6 @@ def perform_fundamental_analysis(ticker_symbol: str, user_identity: str = "") ->
             
     debt_coverage = calculate_debt_coverage(bs, inc)
     
-    # Incorporating edgartools: if user mapped an identity, we can fetch facts
-    edgar_data_found = False
-    if user_identity:
-        try:
-            company = Company(ticker_symbol)
-            # You can access financials with company.financials but yfinance provides easily 
-            # parsable data. We just map success here.
-            edgar_data_found = True
-        except Exception:
-            pass
-            
     return {
         "Ticker": ticker_symbol.upper(),
         "Current Price": current_price,
@@ -234,6 +207,5 @@ def perform_fundamental_analysis(ticker_symbol: str, user_identity: str = "") ->
         "Net Margin": info.get("profitMargins", 0),
         "Company Name": info.get("shortName", ticker_symbol.upper()),
         "Industry": info.get("industry", "Unknown"),
-        "Sector": info.get("sector", "Unknown"),
-        "Edgar Fetched": edgar_data_found
+        "Sector": info.get("sector", "Unknown")
     }

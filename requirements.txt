@@ -4,3 +4,4 @@ numpy>=1.24.0
 yfinance>=0.2.36
 edgartools>=2.15.2
 hishel==0.1.5
+matplotlib>=3.8.0
