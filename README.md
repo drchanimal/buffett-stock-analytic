@@ -14,7 +14,17 @@ The app uses the following core libraries:
 
 1. Clone or navigate to this directory.
 2. Provide a SEC EDGAR identity email in the `app.py` text input when you run it (or configure it securely).
-3. Install the required dependencies:
+3. (Optional but recommended) Create and activate a virtual environment:
+
+```bash
+python -m venv venv
+# On macOS/Linux:
+source venv/bin/activate
+# On Windows:
+venv\Scripts\activate
+```
+
+4. Install the required dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -27,6 +37,26 @@ Run the application locally using Streamlit:
 ```bash
 streamlit run app.py
 ```
+
+## Running the S&P 500 Scanner
+
+To run the standalone multithreaded scanner that evaluates all S&P 500 companies and generates a leaderboard CSV (`sp500_scan_results.csv` by default):
+
+```bash
+python scanner.py
+```
+
+You can customize the scan using command-line arguments:
+
+```bash
+python scanner.py --limit 10 --workers 5 --delay 0.1 --output results.csv
+```
+
+**Options:**
+- `--limit`: Limit the number of tickers to scan (useful for testing). Default: 0 (scan all).
+- `--workers`: Number of concurrent workers. Default: 3.
+- `--delay`: Seconds to wait between requests to prevent API blocks. Default: 0.5.
+- `--output`: Output CSV file name. Default: `sp500_scan_results.csv`.
 
 ## Features
 
